@@ -65,3 +65,53 @@ start.bat .\images ".*\.png$" 90
 
 - 路徑可用相對或絕對路徑
 - 參數與 python 直接執行相同 
+
+## 啟動腳本流程
+
+### PowerShell 執行
+```powershell
+.\venv\Scripts\Activate
+pip install -r requirements.txt
+
+python image_compressor.py "<資料夾路徑>" "<正則表達式>" [壓縮比]
+
+./start.bat "<資料夾路徑>" ".*\.(jpg^|jpeg^|png^|bmp^|webp)$" [壓縮比]
+
+cmd /c start.bat "<資料夾路徑>" ".*\.(jpg|jpeg|png|bmp|webp)$" [壓縮比]
+```
+
+### CMD 執行
+```cmd
+# 直接執行 bat 腳本
+start.bat "<資料夾路徑>" ".*\.(jpg|jpeg|png|bmp|webp)$" [壓縮比]
+```
+
+---
+
+## 正則表達式範例
+- `.*\.png$`：所有 png
+- `.*\.(jpg|jpeg)$`：所有 jpg、jpeg
+- `.*\.(jpg|jpeg|png|bmp|webp)$`：所有支援格式
+- `^IMG_.*\.jpg$`：檔名開頭為 IMG_ 的 jpg
+- `Snipaste_2025-05-19_13-21-31.png$`：指定單一檔案
+
+---
+
+## 壓縮比設置
+- 第三個參數為壓縮比（品質），數字 1~100，數字越小壓縮越大（失真風險高），越大畫質越好（檔案較大）
+- 建議 80~90 之間
+- PNG 會自動最佳化與減色，壓縮比參數不影響 PNG
+
+### 範例
+壓縮所有 jpg，品質 80：
+```powershell
+python image_compressor.py "C:\Users\yaiio\OneDrive\文件" ".*\.jpg$" 80
+```
+壓縮所有格式，品質 90：
+```powershell
+python image_compressor.py "C:\Users\yaiio\OneDrive\文件" ".*\.(jpg|jpeg|png|bmp|webp)$" 90
+```
+壓縮單一 png（PNG 只會自動最佳化與減色）：
+```powershell
+python image_compressor.py "C:\Users\yaiio\OneDrive\文件" "Snipaste_2025-05-19_13-21-31.png"
+``` 

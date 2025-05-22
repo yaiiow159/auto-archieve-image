@@ -4,7 +4,6 @@ import sys
 from PIL import Image
 from tqdm import tqdm
 
-# 支援的圖片副檔名
 IMAGE_EXTS = [".jpg", ".jpeg", ".png", ".bmp", ".webp"]
 
 def find_images(root, pattern):
@@ -22,14 +21,17 @@ def compress_image(path, quality=85):
         img = Image.open(path)
         if img.mode in ("RGBA", "P"):
             img = img.convert("RGB")
-        # 只針對 JPEG/WEBP 壓縮，PNG 則用最佳化
         ext = os.path.splitext(path)[1].lower()
         if ext in [".jpg", ".jpeg"]:
             img.save(path, "JPEG", quality=quality, optimize=True)
         elif ext == ".webp":
             img.save(path, "WEBP", quality=quality, optimize=True)
         elif ext == ".png":
-            img.save(path, "PNG", optimize=True)
+            try:
+                img_quant = img.quantize(method=Image.MEDIANCUT)
+                img_quant.save(path, "PNG", optimize=True)
+            except Exception:
+                img.save(path, "PNG", optimize=True)
         else:
             img.save(path)
         return True
